@@ -1,1 +1,936 @@
 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <title>053academy 練習参加</title>
+
+  <style>
+    :root {
+      --bg: #f5f6f8;
+      --card: #ffffff;
+      --text: #17191c;
+      --sub: #6b7280;
+      --line: #e5e7eb;
+      --accent: #111827;
+      --accent-soft: #eef0f3;
+      --danger: #b91c1c;
+      --success: #166534;
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "Hiragino Sans",
+        "Hiragino Kaku Gothic ProN",
+        "Yu Gothic",
+        sans-serif;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding:
+        max(20px, env(safe-area-inset-top))
+        16px
+        max(40px, env(safe-area-inset-bottom));
+    }
+
+    .header {
+      margin-bottom: 20px;
+    }
+
+    .brand {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--sub);
+    }
+
+    h1 {
+      margin: 6px 0 0;
+      font-size: 28px;
+      line-height: 1.25;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .test-box {
+      border: 1px dashed #aeb4bd;
+      background: #fafafa;
+    }
+
+    .test-title {
+      font-weight: 800;
+      font-size: 15px;
+      margin-bottom: 8px;
+    }
+
+    .test-note {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--sub);
+      margin-bottom: 14px;
+    }
+
+    .input {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 12px;
+      border: 1px solid #cfd4dc;
+      padding: 0 14px;
+      background: #fff;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    .input:focus {
+      border-color: #6b7280;
+    }
+
+    .button {
+      width: 100%;
+      min-height: 50px;
+      border: 0;
+      border-radius: 13px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .status {
+      display: none;
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .status.error {
+      display: block;
+      color: var(--danger);
+    }
+
+    .status.success {
+      display: block;
+      color: var(--success);
+    }
+
+    .viewer {
+      display: none;
+    }
+
+    .viewer.visible {
+      display: block;
+    }
+
+    .viewer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .viewer-name {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .viewer-meta {
+      margin-top: 4px;
+      font-size: 14px;
+      color: var(--sub);
+    }
+
+    .badge {
+      flex-shrink: 0;
+      background: var(--accent-soft);
+      padding: 7px 11px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .section-title {
+      display: none;
+      margin: 26px 2px 12px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .section-title.visible {
+      display: block;
+    }
+
+    .practice-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .practice {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .practice-date {
+      font-size: 14px;
+      color: var(--sub);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .practice-title {
+      font-size: 19px;
+      line-height: 1.35;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .practice-info {
+      display: grid;
+      gap: 8px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 8px;
+    }
+
+    .info-label {
+      color: var(--sub);
+    }
+
+    .fee-row {
+      margin-top: 15px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .fee-label {
+      color: var(--sub);
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    .fee-value {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--sub);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 28px 0;
+      color: var(--sub);
+      font-size: 14px;
+    }
+
+    .loading.visible {
+      display: block;
+    }
+
+    .empty {
+      display: none;
+      text-align: center;
+      padding: 30px 16px;
+      color: var(--sub);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .empty.visible {
+      display: block;
+    }
+
+    .footer-note {
+      margin-top: 30px;
+      text-align: center;
+      color: #9ca3af;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="page">
+
+    <header class="header">
+      <div class="brand">053academy</div>
+      <h1>練習参加</h1>
+    </header>
+
+
+    <!--
+      現在はLIFF導入前のため、
+      LINE userIDを手動入力して確認するテスト領域。
+      LIFF導入後、この領域は削除する。
+    -->
+    <section
+      id="testBox"
+      class="card test-box"
+    >
+
+      <div class="test-title">
+        開発テスト
+      </div>
+
+      <div class="test-note">
+        現在はLINE連携前のため、
+        自分のLINE userIDを入力して
+        表示確認を行います。
+        <br>
+        この値をGitHubへ保存することはありません。
+      </div>
+
+      <input
+        id="lineUserIdInput"
+        class="input"
+        type="password"
+        autocomplete="off"
+        placeholder="LINE userID"
+      >
+
+      <button
+        id="loadButton"
+        class="button"
+        type="button"
+      >
+        練習一覧を表示
+      </button>
+
+      <div
+        id="status"
+        class="status"
+      ></div>
+
+    </section>
+
+
+    <section
+      id="viewerCard"
+      class="card viewer"
+    >
+
+      <div class="viewer-row">
+
+        <div>
+          <div
+            id="viewerName"
+            class="viewer-name"
+          ></div>
+
+          <div
+            id="viewerMeta"
+            class="viewer-meta"
+          ></div>
+        </div>
+
+        <div
+          id="viewerCategory"
+          class="badge"
+        ></div>
+
+      </div>
+
+    </section>
+
+
+    <div
+      id="sectionTitle"
+      class="section-title"
+    >
+      参加できる練習
+    </div>
+
+
+    <div
+      id="loading"
+      class="loading"
+    >
+      読み込み中...
+    </div>
+
+
+    <section
+      id="practiceList"
+      class="practice-list"
+    ></section>
+
+
+    <div
+      id="empty"
+      class="empty"
+    >
+      現在、参加できる練習はありません。
+    </div>
+
+
+    <div class="footer-note">
+      053academy 新申込システム 開発版
+    </div>
+
+  </main>
+
+
+  <script>
+    const API_URL =
+      'https://script.google.com/macros/s/AKfycbwqBavBWeLXQNe09Wdp4VskzI87TOcT1MczRQeplGJaIj4cNVA9fDV00fOzRUpeIW2C/exec';
+
+
+    const lineUserIdInput =
+      document.getElementById('lineUserIdInput');
+
+    const loadButton =
+      document.getElementById('loadButton');
+
+    const statusEl =
+      document.getElementById('status');
+
+    const viewerCard =
+      document.getElementById('viewerCard');
+
+    const viewerName =
+      document.getElementById('viewerName');
+
+    const viewerMeta =
+      document.getElementById('viewerMeta');
+
+    const viewerCategory =
+      document.getElementById('viewerCategory');
+
+    const sectionTitle =
+      document.getElementById('sectionTitle');
+
+    const loading =
+      document.getElementById('loading');
+
+    const practiceList =
+      document.getElementById('practiceList');
+
+    const empty =
+      document.getElementById('empty');
+
+
+    loadButton.addEventListener(
+      'click',
+      loadPracticePage
+    );
+
+
+    lineUserIdInput.addEventListener(
+      'keydown',
+      function(event) {
+        if (event.key === 'Enter') {
+          loadPracticePage();
+        }
+      }
+    );
+
+
+    async function loadPracticePage() {
+
+      const lineUserId =
+        lineUserIdInput.value.trim();
+
+
+      if (!lineUserId) {
+
+        showStatus(
+          'LINE userIDを入力してください。',
+          'error'
+        );
+
+        return;
+      }
+
+
+      resetPage();
+
+      loadButton.disabled = true;
+      loading.classList.add('visible');
+
+
+      try {
+
+        const url =
+          API_URL +
+          '?mode=practicePage' +
+          '&lineUserId=' +
+          encodeURIComponent(
+            lineUserId
+          );
+
+
+        const response =
+          await fetch(
+            url,
+            {
+              method: 'GET',
+              cache: 'no-store'
+            }
+          );
+
+
+        if (!response.ok) {
+          throw new Error(
+            '通信に失敗しました。'
+          );
+        }
+
+
+        const data =
+          await response.json();
+
+
+        if (!data.ok) {
+
+          throw new Error(
+            data.message ||
+            'データを取得できませんでした。'
+          );
+        }
+
+
+        renderViewer(
+          data.viewer
+        );
+
+
+        renderPractices(
+          data.practices || []
+        );
+
+
+        showStatus(
+          '読み込み成功',
+          'success'
+        );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        showStatus(
+          error.message ||
+          '読み込み中にエラーが発生しました。',
+          'error'
+        );
+
+      } finally {
+
+        loadButton.disabled = false;
+
+        loading.classList.remove(
+          'visible'
+        );
+      }
+    }
+
+
+    function renderViewer(viewer) {
+
+      viewerName.textContent =
+        viewer.childName ||
+        '登録情報なし';
+
+
+      const meta = [];
+
+
+      if (viewer.grade) {
+        meta.push(
+          viewer.grade
+        );
+      }
+
+
+      if (
+        viewer.category === 'スクール' &&
+        viewer.unlimitedActive
+      ) {
+
+        meta.push(
+          '通い放題利用中'
+        );
+      }
+
+
+      viewerMeta.textContent =
+        meta.join(' ・ ');
+
+
+      viewerCategory.textContent =
+        viewer.category || '一般';
+
+
+      viewerCard.classList.add(
+        'visible'
+      );
+    }
+
+
+    function renderPractices(
+      practices
+    ) {
+
+      practiceList.innerHTML = '';
+
+
+      sectionTitle.classList.add(
+        'visible'
+      );
+
+
+      if (
+        !Array.isArray(practices) ||
+        practices.length === 0
+      ) {
+
+        empty.classList.add(
+          'visible'
+        );
+
+        return;
+      }
+
+
+      practices.forEach(
+        function(practice) {
+
+          const card =
+            document.createElement(
+              'article'
+            );
+
+
+          card.className =
+            'practice';
+
+
+          const dateText =
+            formatDate(
+              practice.date
+            );
+
+
+          const timeText =
+            buildTimeText(
+              practice.startTime,
+              practice.endTime
+            );
+
+
+          let html = `
+
+            <div class="practice-date">
+              ${escapeHtml(dateText)}
+            </div>
+
+            <div class="practice-title">
+              ${escapeHtml(
+                practice.title ||
+                '練習'
+              )}
+            </div>
+
+            <div class="practice-info">
+          `;
+
+
+          if (timeText) {
+
+            html += `
+
+              <div class="info-row">
+                <div class="info-label">
+                  時間
+                </div>
+
+                <div>
+                  ${escapeHtml(timeText)}
+                </div>
+              </div>
+            `;
+          }
+
+
+          if (practice.place) {
+
+            html += `
+
+              <div class="info-row">
+                <div class="info-label">
+                  会場
+                </div>
+
+                <div>
+                  ${escapeHtml(
+                    practice.place
+                  )}
+                </div>
+              </div>
+            `;
+          }
+
+
+          html += `
+            </div>
+          `;
+
+
+          /*
+           * 一般・通常スクールだけ
+           * 参加費を表示。
+           *
+           * クラブ・スクール通い放題は
+           * 料金欄そのものを出さない。
+           */
+          if (
+            practice.fee &&
+            practice.fee.showFee
+          ) {
+
+            html += `
+
+              <div class="fee-row">
+
+                <div class="fee-label">
+                  あなたの参加費
+                </div>
+
+                <div class="fee-value">
+                  ${escapeHtml(
+                    practice.fee.label ||
+                    '料金未設定'
+                  )}
+                </div>
+
+              </div>
+            `;
+          }
+
+
+          if (practice.note) {
+
+            html += `
+
+              <div class="note">
+                ${escapeHtml(
+                  practice.note
+                )}
+              </div>
+            `;
+          }
+
+
+          card.innerHTML = html;
+
+
+          practiceList.appendChild(
+            card
+          );
+        }
+      );
+    }
+
+
+    function buildTimeText(
+      startTime,
+      endTime
+    ) {
+
+      if (
+        startTime &&
+        endTime
+      ) {
+
+        return (
+          startTime +
+          '〜' +
+          endTime
+        );
+      }
+
+
+      return (
+        startTime ||
+        endTime ||
+        ''
+      );
+    }
+
+
+    function formatDate(value) {
+
+      if (!value) {
+        return '';
+      }
+
+
+      const date =
+        new Date(
+          value + 'T00:00:00'
+        );
+
+
+      if (
+        Number.isNaN(
+          date.getTime()
+        )
+      ) {
+
+        return value;
+      }
+
+
+      const weekdays = [
+        '日',
+        '月',
+        '火',
+        '水',
+        '木',
+        '金',
+        '土'
+      ];
+
+
+      return (
+        (date.getMonth() + 1) +
+        '月' +
+        date.getDate() +
+        '日（' +
+        weekdays[
+          date.getDay()
+        ] +
+        '）'
+      );
+    }
+
+
+    function showStatus(
+      message,
+      type
+    ) {
+
+      statusEl.textContent =
+        message;
+
+
+      statusEl.className =
+        'status ' + type;
+    }
+
+
+    function resetPage() {
+
+      statusEl.textContent = '';
+
+      statusEl.className =
+        'status';
+
+
+      viewerCard.classList.remove(
+        'visible'
+      );
+
+
+      sectionTitle.classList.remove(
+        'visible'
+      );
+
+
+      empty.classList.remove(
+        'visible'
+      );
+
+
+      practiceList.innerHTML = '';
+    }
+
+
+    function escapeHtml(value) {
+
+      return String(
+        value == null
+          ? ''
+          : value
+      )
+
+        .replace(
+          /&/g,
+          '&amp;'
+        )
+
+        .replace(
+          /</g,
+          '&lt;'
+        )
+
+        .replace(
+          />/g,
+          '&gt;'
+        )
+
+        .replace(
+          /"/g,
+          '&quot;'
+        )
+
+        .replace(
+          /'/g,
+          '&#039;'
+        );
+    }
+
+  </script>
+
+</body>
+</html>
