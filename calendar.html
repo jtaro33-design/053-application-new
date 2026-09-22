@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  >
+  <title>053academy 予定カレンダー</title>
+
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+  <style>
+    * {
+      box-sizing:border-box;
+    }
+
+    html,
+    body {
+      width:100%;
+      min-height:100%;
+      margin:0;
+      padding:0;
+    }
+
+    body {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      background:#f1f5fa;
+      color:#142033;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Sans",
+        "Yu Gothic",
+        sans-serif;
+    }
+
+    .loading {
+      width:100%;
+      max-width:420px;
+      padding:24px;
+      border-radius:18px;
+      background:#fff;
+      text-align:center;
+      font-weight:800;
+      box-shadow:
+        0 4px 15px
+        rgba(32,55,85,.06);
+    }
+
+    .sub {
+      margin-top:8px;
+      color:#758195;
+      font-size:13px;
+      font-weight:600;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="loading">
+    予定を読み込んでいます
+
+    <div class="sub">
+      少々お待ちください
+    </div>
+  </div>
+
+
+  <script>
+    const LIFF_ID =
+      '2009553339-EXb6GNt4';
+
+    const GAS_URL =
+      'https://script.google.com/macros/s/AKfycbzvkYYrOJdIjlZaI3jsagEpho7IJmh0dQiYHRn2DusXz6zuidQuUjmt9iBKt4Uicyxk/exec';
+
+
+    async function start() {
+      try {
+
+        await liff.init({
+          liffId:
+            LIFF_ID
+        });
+
+
+        if (!liff.isLoggedIn()) {
+          liff.login();
+
+          return;
+        }
+
+
+        const idToken =
+          liff.getIDToken();
+
+
+        if (!idToken) {
+          throw new Error(
+            'LINE認証情報を取得できませんでした'
+          );
+        }
+
+
+        const form =
+          document.createElement(
+            'form'
+          );
+
+
+        form.method =
+          'POST';
+
+        form.action =
+          GAS_URL;
+
+
+        const mode =
+          document.createElement(
+            'input'
+          );
+
+        mode.type =
+          'hidden';
+
+        mode.name =
+          'mode';
+
+        mode.value =
+          'calendarPage';
+
+
+        const token =
+          document.createElement(
+            'input'
+          );
+
+        token.type =
+          'hidden';
+
+        token.name =
+          'idToken';
+
+        token.value =
+          idToken;
+
+
+        form.appendChild(
+          mode
+        );
+
+        form.appendChild(
+          token
+        );
+
+        document.body.appendChild(
+          form
+        );
+
+        form.submit();
+
+
+      } catch (error) {
+
+        document.body.innerHTML =
+          '<div class="loading">' +
+            '読み込みに失敗しました' +
+            '<div class="sub">' +
+              String(
+                error &&
+                error.message
+                  ? error.message
+                  : error
+              ) +
+            '</div>' +
+          '</div>';
+      }
+    }
+
+
+    start();
+  </script>
+
+</body>
+</html>
