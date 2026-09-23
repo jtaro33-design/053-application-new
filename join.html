@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+  >
+  <meta name="theme-color" content="#28452f">
+  <title>053academy｜体験・入会</title>
+
+  <style>
+    :root {
+      --green: #2f4d36;
+      --green-deep: #213a28;
+      --green-soft: #edf3eb;
+      --beige: #c9aa83;
+      --beige-soft: #f6efe5;
+      --text: #273028;
+      --sub: #687168;
+      --line: #dfe5dd;
+      --bg: #f8f7f2;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Hiragino Sans",
+        "Yu Gothic",
+        "YuGothic",
+        "Noto Sans JP",
+        sans-serif;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      min-height: 100svh;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 620px;
+      min-height: 100svh;
+      margin: 0 auto;
+      padding:
+        max(24px, env(safe-area-inset-top))
+        max(18px, env(safe-area-inset-right))
+        max(28px, env(safe-area-inset-bottom))
+        max(18px, env(safe-area-inset-left));
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 28px 22px 24px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow:
+        0 12px 34px rgba(32, 53, 38, 0.08);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -24px;
+      top: -14px;
+      width: 190px;
+      height: 190px;
+      background:
+        url("https://jtaro33-design.github.io/053-application-new/053-logo.webp")
+        center / contain no-repeat;
+      opacity: 0.075;
+      pointer-events: none;
+    }
+
+    .brand {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-name {
+      margin: 0;
+      color: var(--green-deep);
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-sub {
+      margin: 3px 0 0;
+      color: var(--sub);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    h1 {
+      position: relative;
+      z-index: 1;
+      margin: 26px 0 0;
+      color: var(--green-deep);
+      font-size: 29px;
+      line-height: 1.35;
+      font-weight: 950;
+      letter-spacing: 0.01em;
+    }
+
+    .lead {
+      position: relative;
+      z-index: 1;
+      margin: 12px 0 0;
+      color: var(--sub);
+      font-size: 16px;
+      line-height: 1.85;
+      font-weight: 650;
+    }
+
+    .choices {
+      display: grid;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .choice {
+      display: block;
+      position: relative;
+      min-height: 112px;
+      padding: 20px 54px 18px 20px;
+      border-radius: 22px;
+      text-decoration: none;
+      -webkit-tap-highlight-color: transparent;
+      transition:
+        transform 0.12s ease,
+        box-shadow 0.12s ease;
+    }
+
+    .choice:active {
+      transform: scale(0.985);
+    }
+
+    .choice-trial {
+      border: 1.5px solid #cddbc8;
+      background: var(--green-soft);
+      color: var(--green-deep);
+      box-shadow:
+        0 8px 24px rgba(41, 74, 47, 0.08);
+    }
+
+    .choice-member {
+      border: 1.5px solid #dfc9ad;
+      background: var(--beige-soft);
+      color: #6f5335;
+      box-shadow:
+        0 8px 24px rgba(113, 83, 53, 0.07);
+    }
+
+    .choice-label {
+      display: block;
+      font-size: 21px;
+      line-height: 1.35;
+      font-weight: 950;
+    }
+
+    .choice-note {
+      display: block;
+      margin-top: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 750;
+      opacity: 0.82;
+    }
+
+    .choice-arrow {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 28px;
+      font-weight: 600;
+      opacity: 0.72;
+    }
+
+    .help {
+      margin-top: 18px;
+      padding: 16px 17px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .help-title {
+      margin: 0;
+      color: var(--green-deep);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .help-text {
+      margin: 6px 0 0;
+      color: var(--sub);
+      font-size: 13px;
+      line-height: 1.7;
+      font-weight: 650;
+    }
+
+    .footer {
+      margin-top: 22px;
+      text-align: center;
+      color: #8a9189;
+      font-size: 11px;
+      line-height: 1.6;
+      font-weight: 650;
+    }
+
+    @media (min-width: 560px) {
+      .page {
+        padding-top: 36px;
+      }
+
+      .hero {
+        padding: 32px 28px 28px;
+      }
+
+      h1 {
+        font-size: 32px;
+      }
+
+      .choice {
+        min-height: 118px;
+        padding-left: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <section class="hero">
+      <div class="brand">
+        <img
+          class="brand-logo"
+          src="https://jtaro33-design.github.io/053-application-new/053-logo.webp"
+          alt="053academy"
+        >
+
+        <div class="brand-copy">
+          <p class="brand-name">053academy</p>
+          <p class="brand-sub">DEVELOPMENT ACADEMY</p>
+        </div>
+      </div>
+
+      <h1>体験・入会</h1>
+
+      <p class="lead">
+        ご希望に合わせて、下からお選びください。
+      </p>
+    </section>
+
+
+    <section class="choices">
+
+      <a
+        class="choice choice-trial"
+        href="https://liff.line.me/2009553339-EXb6GNt4?mode=trial"
+      >
+        <span class="choice-label">
+          無料体験を申し込む
+        </span>
+
+        <span class="choice-note">
+          まずは053academyを体験してみたい方
+        </span>
+
+        <span class="choice-arrow">›</span>
+      </a>
+
+
+      <a
+        class="choice choice-member"
+        href="https://liff.line.me/2009553339-EXb6GNt4?mode=member"
+      >
+        <span class="choice-label">
+          会員登録をする
+        </span>
+
+        <span class="choice-note">
+          入会がお決まりの方・登録手続きを進める方
+        </span>
+
+        <span class="choice-arrow">›</span>
+      </a>
+
+    </section>
+
+
+    <section class="help">
+      <p class="help-title">
+        どちらを選べばよいか迷った場合
+      </p>
+
+      <p class="help-text">
+        このLINEのトーク画面からお気軽にご相談ください。
+      </p>
+    </section>
+
+
+    <footer class="footer">
+      053academy
+    </footer>
+
+  </main>
+</body>
+</html>
