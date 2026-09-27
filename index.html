@@ -149,6 +149,14 @@
       id="form-id-token"
       value=""
     >
+
+    <input type="hidden" name="entryMode" id="form-entry-mode" value="">
+    <input type="hidden" name="clientUserAgent" id="form-client-user-agent" value="">
+    <input type="hidden" name="clientUrl" id="form-client-url" value="">
+    <input type="hidden" name="liffInClient" id="form-liff-in-client" value="">
+    <input type="hidden" name="liffLoggedIn" id="form-liff-logged-in" value="">
+    <input type="hidden" name="authStage" id="form-auth-stage" value="">
+    <input type="hidden" name="authDetail" id="form-auth-detail" value="">
   </form>
 
   <script>
@@ -308,7 +316,7 @@
         }
       }
 
-      return 'practice';
+      return '';
     }
 
 
@@ -331,9 +339,74 @@
     }
 
 
+    function safeLiffInClient() {
+      try {
+        return (
+          typeof liff !== 'undefined' &&
+          liff.isInClient()
+        )
+          ? 'true'
+          : 'false';
+      } catch (error) {
+        return 'unknown';
+      }
+    }
+
+
+    function safeLiffLoggedIn() {
+      try {
+        return (
+          typeof liff !== 'undefined' &&
+          liff.isLoggedIn()
+        )
+          ? 'true'
+          : 'false';
+      } catch (error) {
+        return 'unknown';
+      }
+    }
+
+
+    function fillClientContext(
+      mode
+    ) {
+      document.getElementById(
+        'form-entry-mode'
+      ).value =
+        String(
+          mode || ''
+        );
+
+      document.getElementById(
+        'form-client-user-agent'
+      ).value =
+        String(
+          navigator.userAgent || ''
+        );
+
+      document.getElementById(
+        'form-client-url'
+      ).value =
+        String(
+          window.location.href || ''
+        );
+
+      document.getElementById(
+        'form-liff-in-client'
+      ).value =
+        safeLiffInClient();
+
+      document.getElementById(
+        'form-liff-logged-in'
+      ).value =
+        safeLiffLoggedIn();
+    }
+
+
     function submitToGas(
       route,
-      idToken
+      idToken,
+      mode
     ) {
       document.getElementById(
         'form-mode'
@@ -345,10 +418,79 @@
       ).value =
         idToken;
 
+      document.getElementById(
+        'form-auth-stage'
+      ).value =
+        '';
+
+      document.getElementById(
+        'form-auth-detail'
+      ).value =
+        '';
+
+      fillClientContext(
+        mode
+      );
+
       setStatus(
         route.title +
         'を開いています…',
         false
+      );
+
+      document.getElementById(
+        'gas-form'
+      ).submit();
+    }
+
+
+    function submitAuthFailure(
+      mode,
+      stage,
+      error
+    ) {
+      const detail =
+        error &&
+        error.message
+          ? String(error.message)
+          : String(
+              error ||
+              'LINE認証に失敗しました'
+            );
+
+      document.getElementById(
+        'form-mode'
+      ).value =
+        'authErrorPage';
+
+      document.getElementById(
+        'form-id-token'
+      ).value =
+        '';
+
+      document.getElementById(
+        'form-auth-stage'
+      ).value =
+        String(
+          stage ||
+          'client_unknown'
+        );
+
+      document.getElementById(
+        'form-auth-detail'
+      ).value =
+        detail.slice(
+          0,
+          1800
+        );
+
+      fillClientContext(
+        mode
+      );
+
+      setStatus(
+        '認証エラーを記録しています…',
+        true
       );
 
       document.getElementById(
@@ -363,7 +505,27 @@
 
       const route =
         MODE_MAP[mode] ||
-        MODE_MAP.practice;
+        null;
+
+      if (!route) {
+        document.title =
+          '053academy リンク確認';
+
+        document.getElementById(
+          'page-title'
+        ).textContent =
+          'リンクを確認できません';
+
+        submitAuthFailure(
+          mode || 'unknown',
+          'entry_invalid_mode',
+          new Error(
+            '入口情報を確認できませんでした'
+          )
+        );
+
+        return;
+      }
 
       document.title =
         '053academy ' +
@@ -374,6 +536,8 @@
       ).textContent =
         route.title;
 
+      let authStage =
+        'liff_init';
 
       try {
         setStatus(
@@ -386,6 +550,8 @@
             LIFF_ID
         });
 
+        authStage =
+          'liff_login_state';
 
         if (
           !liff.isLoggedIn()
@@ -395,6 +561,9 @@
             false
           );
 
+          authStage =
+            'liff_login_redirect';
+
           liff.login({
             redirectUri:
               window.location.href
@@ -403,10 +572,11 @@
           return;
         }
 
+        authStage =
+          'liff_get_id_token';
 
         const idToken =
           liff.getIDToken();
-
 
         if (!idToken) {
           throw new Error(
@@ -414,10 +584,13 @@
           );
         }
 
+        authStage =
+          'gas_form_post';
 
         submitToGas(
           route,
-          idToken
+          idToken,
+          mode
         );
 
       } catch (error) {
@@ -425,17 +598,14 @@
           error
         );
 
-        setStatus(
-          (
-            error &&
-            error.message
-          )
-            ? error.message
-            : 'LINE認証に失敗しました',
-          true
+        submitAuthFailure(
+          mode,
+          authStage,
+          error
         );
       }
     }
+
 
 
     start();
